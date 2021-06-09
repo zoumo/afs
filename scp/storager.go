@@ -4,18 +4,19 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/viant/afs/base"
-	"github.com/viant/afs/file"
-	"github.com/viant/afs/option"
-	"github.com/viant/afs/storage"
-	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/viant/afs/base"
+	"github.com/viant/afs/file"
+	"github.com/viant/afs/option"
+	"github.com/viant/afs/storage"
+	"golang.org/x/crypto/ssh"
 )
 
 type storager struct {
@@ -198,4 +199,13 @@ func NewStorager(address string, timeout time.Duration, config *ssh.ClientConfig
 	result.Storager.List = result.List
 
 	return result, result.connect()
+}
+
+func NewStoragerFrom(client *ssh.Client, timeout time.Duration) (storage.Storager, error) {
+	result := &storager{
+		timeout: timeout,
+		Client:  client,
+	}
+	result.Storager.List = result.List
+	return result, nil
 }
